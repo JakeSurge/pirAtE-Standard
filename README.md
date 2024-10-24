@@ -41,7 +41,7 @@ The basic idea for this project is to add an a substitution layer after some for
                     | '_ \| | '__|  _  | __|  __| `--. \             
                     | |_) | | |  | | | | |_| |___/\__/ /             
                     | .__/|_|_|  \_| |_/\__\____/\____/              
-                    | |                                              
+                    | |
                     |_|
 </pre>
 </div>
