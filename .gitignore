@@ -160,3 +160,25 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# dependencies
+/walktheplank/node_modules
+/walktheplank/.pnp
+/walktheplank/.pnp.js
+
+# testing
+/walktheplank/coverage
+
+# production
+/walktheplank/build
+
+# misc
+/walktheplank/.DS_Store
+/walktheplank/.env.local
+/walktheplank/.env.development.local
+/walktheplank/.env.test.local
+/walktheplank/.env.production.local
+
+/walktheplank/npm-debug.log*
+/walktheplank/yarn-debug.log*
+/walktheplank/yarn-error.log*
