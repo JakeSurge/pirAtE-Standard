@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import wordset
 
 app = Flask(__name__)
 
@@ -8,7 +9,7 @@ def get_encrypted_text():
     plain_text = request.args.get("plaintext")
     key = request.args.get("key")
 
-    return __pirAtES__(plain_text, key), 200
+    return jsonify(__pirAtES__(plain_text, key)), 200
 
 # Function that actually does the encryption/pirate substitution
 def __pirAtES__(plain_text, key):
