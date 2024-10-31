@@ -26,7 +26,8 @@ def __pirAtES__(plain_text, key):
     # Encrypt the text
     cipher_text = cipher.encrypt(pad(byte_plain_text, AES.block_size))
     
-    return cipher_text, 200
+    # Make sure to decode to base256 so it translates well when copied
+    return cipher_text.decode("latin-1"), 200
 
 # Get request for decryption
 @app.route("/get-plain-text/")
@@ -39,14 +40,14 @@ def get_decrypted_text():
 # Function that undoes pirate substitution/decrypts
 def __undo_pirAtES__(cipher_text, key):
     # Encode args so they play well with C
-    byte_cipher_text = bytes(cipher_text, "utf-8")
+    byte_cipher_text = cipher_text.encode("latin-1")
     byte_key = bytes(key, "utf-8")
 
     # Create cipher
     cipher = AES.new(byte_key, AES.MODE_CBC, b"0000000000000000")
 
     # Decrypt the text
-    plain_text = unpad(cipher.decrypt(bytearray(cipher_text)), AES.block_size)
+    plain_text = unpad(cipher.decrypt(byte_cipher_text), AES.block_size)
 
     return plain_text, 200
 
