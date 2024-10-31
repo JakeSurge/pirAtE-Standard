@@ -1,10 +1,19 @@
-import React from "react";
-import logo from "./logo.svg";
 import { BlackPearl } from "./BlackPearl";
-import pirateman from "./pirateman.jpg";
+import piratebg from "./piratebg.jpeg";
 
 function App() {
-  return <BlackPearl image={pirateman}></BlackPearl>;
+  const appStyle = {
+    backgroundImage: `url(${piratebg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    minHeight: "100vh",
+  };
+
+  return (
+    <div style={appStyle}>
+      <BlackPearl />
+    </div>
+  );
 }
 
 export default App;
