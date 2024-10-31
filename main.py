@@ -6,7 +6,10 @@ import wordset
 
 app = Flask(__name__)
 
-# Get request for encryption
+# Standard IV to use (this way the IV does not need to be known in addition to password)
+iv = b"0000000000000000"
+
+# GET request for encryption
 @app.route("/get-piratified-text/")
 def get_encrypted_text():
     plain_text = request.args.get("plaintext")
@@ -21,7 +24,7 @@ def __pirAtES__(plain_text, key):
     byte_key = bytes(key, "utf-8")
     
     # Create cipher
-    cipher = AES.new(byte_key, AES.MODE_CBC, b"0000000000000000")
+    cipher = AES.new(byte_key, AES.MODE_CBC, iv)
 
     # Encrypt the text
     cipher_text = cipher.encrypt(pad(byte_plain_text, AES.block_size))
@@ -29,7 +32,7 @@ def __pirAtES__(plain_text, key):
     # Make sure to decode to base256 so it translates well when copied
     return cipher_text.decode("latin-1"), 200
 
-# Get request for decryption
+# GET request for decryption
 @app.route("/get-plain-text/")
 def get_decrypted_text():
     cipher_text = request.args.get("ciphertext")
@@ -44,7 +47,7 @@ def __undo_pirAtES__(cipher_text, key):
     byte_key = bytes(key, "utf-8")
 
     # Create cipher
-    cipher = AES.new(byte_key, AES.MODE_CBC, b"0000000000000000")
+    cipher = AES.new(byte_key, AES.MODE_CBC, iv)
 
     # Decrypt the text
     plain_text = unpad(cipher.decrypt(byte_cipher_text), AES.block_size)
