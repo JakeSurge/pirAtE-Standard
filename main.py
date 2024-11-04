@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 
@@ -9,11 +9,21 @@ app = Flask(__name__)
 # Standard IV to use (this way the IV does not need to be known in addition to password)
 iv = b"0000000000000000"
 
-# GET request for encryption
-@app.route("/get-piratified-text/")
+# POST request for encryption
+@app.route("/get-piratified-text/", methods=["POST"])
 def get_encrypted_text():
-    plain_text = request.args.get("plaintext")
-    key = request.args.get("key")
+    # Grab JSON and args
+    try:
+        data = request.get_json()
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Invalid JSON format'}), 400
+    
+    plain_text = data.get("plaintext")
+    key = data.get("key")
+
+    # Validate data is not null
+    if plain_text is None or key is None:
+        return jsonify({'error': 'Missing JSON data'}), 400
 
     return __pirAtES__(plain_text, key)
 
@@ -32,11 +42,17 @@ def __pirAtES__(plain_text, key):
     # Make sure to decode to base256 so it translates well when copied
     return cipher_text.decode("latin-1"), 200
 
-# GET request for decryption
-@app.route("/get-plain-text/")
+# POST request for decryption
+@app.route("/get-plain-text/", methods=["POST"])
 def get_decrypted_text():
-    cipher_text = request.args.get("ciphertext")
-    key = request.args.get("key")
+    # Grab JSON and args
+    try:
+        data = request.json
+        cipher_text = data.get("ciphertext")
+        key = data.get("key")
+    except:
+        return "JSON formatting issue", 400
+    
 
     return __undo_pirAtES__(cipher_text, key)
 
