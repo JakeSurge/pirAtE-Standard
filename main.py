@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, abort
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+import json
+import base64
 
 import wordset
 
@@ -40,7 +42,7 @@ def __pirAtES__(plain_text, key):
     cipher_text = cipher.encrypt(pad(byte_plain_text, AES.block_size))
     
     # Make sure to decode to base256 so it translates well when copied
-    return cipher_text.decode("latin-1"), 200
+    return base64.b64encode(cipher_text), 200
 
 # POST request for decryption
 @app.route("/get-plain-text/", methods=["POST"])
@@ -48,18 +50,22 @@ def get_decrypted_text():
     # Grab JSON and args
     try:
         data = request.json
-        cipher_text = data.get("ciphertext")
-        key = data.get("key")
-    except:
-        return "JSON formatting issue", 400
-    
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Invalid JSON format'}), 400
+
+    cipher_text = data.get("ciphertext")
+    key = data.get("key")
+
+    # Validate data is not null
+    if cipher_text is None or key is None:
+        return jsonify({'error': 'Missing JSON data'}), 400
 
     return __undo_pirAtES__(cipher_text, key)
 
 # Function that undoes pirate substitution/decrypts
 def __undo_pirAtES__(cipher_text, key):
     # Encode args so they play well with C
-    byte_cipher_text = cipher_text.encode("latin-1")
+    byte_cipher_text = base64.b64decode(cipher_text)
     byte_key = bytes(key, "utf-8")
 
     # Create cipher
