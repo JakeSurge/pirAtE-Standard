@@ -32,8 +32,8 @@ def get_encrypted_text():
 # Function that does the encryption/pirate substitution
 def __pirAtES__(plain_text, key):
     # Encode args so they play well with C
-    byte_plain_text = bytes(plain_text, "utf-8")
-    byte_key = bytes(key, "utf-8")
+    byte_plain_text = plain_text.encode("utf-8")
+    byte_key = key.encode("utf-8")
     
     # Create cipher
     cipher = AES.new(byte_key, AES.MODE_CBC, iv)
@@ -66,7 +66,7 @@ def get_decrypted_text():
 def __undo_pirAtES__(cipher_text, key):
     # Encode args so they play well with C
     byte_cipher_text = base64.b64decode(cipher_text)
-    byte_key = bytes(key, "utf-8")
+    byte_key = key.encode("utf-8")
 
     # Create cipher
     cipher = AES.new(byte_key, AES.MODE_CBC, iv)
