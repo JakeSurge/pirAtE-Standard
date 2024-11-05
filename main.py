@@ -42,7 +42,7 @@ def __pirAtES__(plain_text, key):
     cipher_text = cipher.encrypt(pad(byte_plain_text, AES.block_size))
     
     # Make sure to decode to base256 so it translates well when copied
-    return base64.b64encode(cipher_text), 200
+    return jsonify(base64.b64encode(cipher_text).decode("utf-8"), 200)
 
 # POST request for decryption
 @app.route("/get-plain-text/", methods=["POST"])
@@ -74,7 +74,7 @@ def __undo_pirAtES__(cipher_text, key):
     # Decrypt the text
     plain_text = unpad(cipher.decrypt(byte_cipher_text), AES.block_size)
 
-    return plain_text, 200
+    return jsonify(plain_text.decode("utf-8"), 200)
 
 
 if __name__ == "__main__":
