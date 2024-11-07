@@ -51,6 +51,7 @@ export const BlackPearl = ({ input }: BlackPearlProps) => {
           image={redbeardparrot}
           buttonText="Encrypt"
           InputPlaceholder="Text to be encrypted"
+          buttonType="encrypt"
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -58,6 +59,7 @@ export const BlackPearl = ({ input }: BlackPearlProps) => {
           image={pirateman}
           buttonText="Decrypt"
           InputPlaceholder="Text to be decrypted"
+          buttonType="decrypt"
         />
       </CustomTabPanel>
     </Box>
