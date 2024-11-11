@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, abort
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import json
-import base64
 import hashlib
 import random
 
@@ -47,10 +46,10 @@ def __pirAtES__(plain_text, key):
     hashed_key = hashlib.sha256(byte_key).digest()
 
     # Generate substitution map
-    pirate_dict = __generate_substitution_dict__(hashed_key)
+    substitution_dict = __generate_substitution_dict__(hashed_key)
 
     # Substitute
-    piratified_text = __substitute_pirate__(cipher_text, pirate_dict)
+    piratified_text = __substitute_pirate__(cipher_text, substitution_dict)
 
     # Return pirate version - no need for encoding since it goes to string
     return jsonify(piratified_text, 200)
@@ -74,16 +73,24 @@ def get_decrypted_text():
     return __undo_pirAtES__(cipher_text, key)
 
 # Function that undoes pirate substitution/decrypts
-def __undo_pirAtES__(cipher_text, key):
-    # Encode args so they play well with C
-    byte_cipher_text = base64.b64decode(cipher_text)
+def __undo_pirAtES__(pirate_text, key):
+    # Encode key so it plays well with C
     byte_key = key.encode('utf-8')
+    
+    # Hash the key for unsubstituting
+    hashed_key = hashlib.sha256(byte_key).digest()
+    
+    # Generate unsubstitution map
+    unsubstitution_dict = __generate_unsubstitution_dict__(hashed_key)
+
+    # Get the pirate_text to cipher_text to decrypt
+    cipher_text = __unsubstitute_pirate__(pirate_text, unsubstitution_dict)
 
     # Create cipher
     cipher = AES.new(byte_key, AES.MODE_CBC, DEFAULT_IV)
 
     # Decrypt the text
-    plain_text = unpad(cipher.decrypt(byte_cipher_text), AES.block_size)
+    plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)
 
     return jsonify(plain_text.decode('utf-8'), 200)
 
@@ -95,6 +102,15 @@ def __substitute_pirate__(cipher_text, substitution_dict):
     
     # Return pirate version
     return pirate_text
+
+def __unsubstitute_pirate__(pirate_text, unsubstitution_dict):
+    # Loop through the splitted pirate_text and get it back to cipher_text
+    cipher_text = b''
+    for pirate_term in pirate_text.split():
+        cipher_text += bytes(int(unsubstitution_dict[pirate_term], 2))
+    
+    # Return cipher version
+    return cipher_text
 
 # Helper functions for pirate substitution
 def __generate_substitution_dict__(hashed_key):
