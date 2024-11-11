@@ -3,7 +3,6 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import json
 import base64
-import itertools
 import hashlib
 import random
 
@@ -47,13 +46,14 @@ def __pirAtES__(plain_text, key):
     # Hash the key used for pirate substitution
     hashed_key = hashlib.sha256(byte_key).digest()
 
-    # TODO: Add the actual substitution part of it
     # Generate substitution map
     pirate_dict = __generate_substitution_dict__(hashed_key)
-    print(pirate_dict)
 
-    # Make sure to decode to base256 so it translates well when copied
-    return jsonify(base64.b64encode(cipher_text).decode('utf-8'), 200)
+    # Substitute
+    piratified_text = __substitute_pirate__(cipher_text, pirate_dict)
+
+    # Return pirate version - no need for encoding since it goes to string
+    return jsonify(piratified_text, 200)
 
 # POST request for decryption
 @app.route('/get-plain-text/', methods=['POST'])
@@ -87,6 +87,16 @@ def __undo_pirAtES__(cipher_text, key):
 
     return jsonify(plain_text.decode('utf-8'), 200)
 
+def __substitute_pirate__(cipher_text, substitution_dict):
+    # Loop through the cipher_text creating a new string object for the pirate version
+    pirate_text = ''
+    for byte in cipher_text:
+        pirate_text += ' ' + substitution_dict[bin(byte)]
+    
+    # Return pirate version
+    return pirate_text
+
+# Helper functions for pirate substitution
 def __generate_substitution_dict__(hashed_key):
     # Shuffle the wordset based off the hashed key
     shuffled_pirate_terms = random.Random(hashed_key).sample(PIRATE_TERMS, len(PIRATE_TERMS))
@@ -105,13 +115,11 @@ def __generate_unsubstitution_dict__(hashed_key):
 
     return substitution_dict
 
-# Helper functions for pirate substitution
 def __generate_possible_bytes__():
-    # Use itertools to efficiently generate list of all possible bytes
-    possible_bytes_tuples = itertools.product([0, 1], repeat=8)
-
-    # Reformat from tuples to string for the possible bytes
-    possible_bytes = [('').join(map(str, byte)) for byte in possible_bytes_tuples]
+    # For number 0 - 255 convert to byte therefore covering every byte possible
+    possible_bytes = []
+    for num in range(256):
+        possible_bytes.append(bin(num))
 
     return possible_bytes
 
