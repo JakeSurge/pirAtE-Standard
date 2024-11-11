@@ -89,7 +89,10 @@ def __undo_pirAtES__(cipher_text, key):
 # Helper functions for pirate substitution
 def __generate_possible_bytes__():
     # Use itertools to efficiently generate list of all possible bytes
-    possible_bytes = itertools.product([0, 1], repeat=8)
+    possible_bytes_tuples = itertools.product([0, 1], repeat=8)
+
+    # Reformat from tuples to string for the possible bytes
+    possible_bytes = [('').join(map(str, byte)) for byte in possible_bytes_tuples]
 
     return possible_bytes
 
