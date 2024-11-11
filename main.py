@@ -87,6 +87,24 @@ def __undo_pirAtES__(cipher_text, key):
 
     return jsonify(plain_text.decode("utf-8"), 200)
 
+def __generate_substitution_dict__(hashed_key):
+    # Shuffle the wordset based off the hashed key
+    shuffled_pirate_terms = random.Random(hashed_key).sample(PIRATE_TERMS, len(PIRATE_TERMS))
+    
+    # Create a substitution dict with bytes and now shuffled pirate_terms
+    substitution_dict = dict(zip(__generate_possible_bytes__(), shuffled_pirate_terms))
+
+    return substitution_dict
+
+def __generate_unsubstitution_dict__(hashed_key):
+    # Shuffle the wordset based off the hashed key
+    shuffled_pirate_terms = random.Random(hashed_key).sample(PIRATE_TERMS, len(PIRATE_TERMS))
+    
+    # Create a unsubstitution dict (for reversing it) with bytes and now shuffled pirate_terms
+    substitution_dict = dict(zip(shuffled_pirate_terms, __generate_possible_bytes__()))
+
+    return substitution_dict
+
 # Helper functions for pirate substitution
 def __generate_possible_bytes__():
     # Use itertools to efficiently generate list of all possible bytes
@@ -96,15 +114,6 @@ def __generate_possible_bytes__():
     possible_bytes = [('').join(map(str, byte)) for byte in possible_bytes_tuples]
 
     return possible_bytes
-
-def __generate_substitution_dict__(hashed_key):
-    # Shuffle the wordset based off the hashed key
-    shuffled_pirate_terms = random.Random(hashed_key).sample(PIRATE_TERMS, len(PIRATE_TERMS))
-    
-    # Create a substitution dict with bytes and now shuffled pirate_terms
-    substitution_dict = dict(zip(__generate_possible_bytes__(), shuffled_pirate_terms))
-
-    return substitution_dict
 
 if __name__ == "__main__":
     app.run(debug=True)
