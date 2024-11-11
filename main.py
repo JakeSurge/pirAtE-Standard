@@ -5,8 +5,9 @@ import json
 import base64
 import itertools
 import hashlib
+import random
 
-import wordset
+from wordset import PIRATE_TERMS
 
 app = Flask(__name__)
 
@@ -44,7 +45,7 @@ def __pirAtES__(plain_text, key):
     cipher_text = cipher.encrypt(pad(byte_plain_text, AES.block_size))
 
     # Hash the key used for pirate substitution
-    hashed_key = hashlib.sha256(byte_key).hexdigest()
+    hashed_key = hashlib.sha256(byte_key).digest()
 
     # TODO: Add the actual substitution part of it
     # Generate substitution map
@@ -97,9 +98,11 @@ def __generate_possible_bytes__():
     return possible_bytes
 
 def __generate_substitution_dict__(hashed_key):
-    #TODO: Get this actually randomized, for now get it operational without randomizing by hashed key
-    # Create a substitution dict with bytes and pirate_terms
-    substitution_dict = dict(zip(__generate_possible_bytes__(), wordset.pirate_terms))
+    # Shuffle the wordset based off the hashed key
+    shuffled_pirate_terms = random.Random(hashed_key).sample(PIRATE_TERMS, len(PIRATE_TERMS))
+    
+    # Create a substitution dict with bytes and now shuffled pirate_terms
+    substitution_dict = dict(zip(__generate_possible_bytes__(), shuffled_pirate_terms))
 
     return substitution_dict
 

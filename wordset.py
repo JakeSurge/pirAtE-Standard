@@ -1,4 +1,4 @@
-pirate_terms = [
+PIRATE_TERMS = [
     "Aft",
     "Ahoy",
     "Anchor",
