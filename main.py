@@ -12,10 +12,10 @@ from wordset import PIRATE_TERMS
 app = Flask(__name__)
 
 # Standard IV to use
-DEFAULT_IV = b"0000000000000000"
+DEFAULT_IV = b'0000000000000000'
 
 # POST request for encryption
-@app.route("/get-piratified-text/", methods=["POST"])
+@app.route('/get-piratified-text/', methods=['POST'])
 def get_encrypted_text():
     # Grab JSON and args
     try:
@@ -23,8 +23,8 @@ def get_encrypted_text():
     except json.JSONDecodeError:
         return jsonify({'error': 'Invalid JSON format'}), 400
     
-    plain_text = data.get("plaintext")
-    key = data.get("key")
+    plain_text = data.get('plaintext')
+    key = data.get('key')
 
     # Validate data is not null
     if plain_text is None or key is None:
@@ -35,8 +35,8 @@ def get_encrypted_text():
 # Function that does the encryption/pirate substitution
 def __pirAtES__(plain_text, key):
     # Encode args so they play well with C
-    byte_plain_text = plain_text.encode("utf-8")
-    byte_key = key.encode("utf-8")
+    byte_plain_text = plain_text.encode('utf-8')
+    byte_key = key.encode('utf-8')
     
     # Create cipher
     cipher = AES.new(byte_key, AES.MODE_CBC, DEFAULT_IV)
@@ -53,10 +53,10 @@ def __pirAtES__(plain_text, key):
     print(pirate_dict)
 
     # Make sure to decode to base256 so it translates well when copied
-    return jsonify(base64.b64encode(cipher_text).decode("utf-8"), 200)
+    return jsonify(base64.b64encode(cipher_text).decode('utf-8'), 200)
 
 # POST request for decryption
-@app.route("/get-plain-text/", methods=["POST"])
+@app.route('/get-plain-text/', methods=['POST'])
 def get_decrypted_text():
     # Grab JSON and args
     try:
@@ -64,8 +64,8 @@ def get_decrypted_text():
     except json.JSONDecodeError:
         return jsonify({'error': 'Invalid JSON format'}), 400
 
-    cipher_text = data.get("ciphertext")
-    key = data.get("key")
+    cipher_text = data.get('ciphertext')
+    key = data.get('key')
 
     # Validate data is not null
     if cipher_text is None or key is None:
@@ -77,7 +77,7 @@ def get_decrypted_text():
 def __undo_pirAtES__(cipher_text, key):
     # Encode args so they play well with C
     byte_cipher_text = base64.b64decode(cipher_text)
-    byte_key = key.encode("utf-8")
+    byte_key = key.encode('utf-8')
 
     # Create cipher
     cipher = AES.new(byte_key, AES.MODE_CBC, DEFAULT_IV)
@@ -85,7 +85,7 @@ def __undo_pirAtES__(cipher_text, key):
     # Decrypt the text
     plain_text = unpad(cipher.decrypt(byte_cipher_text), AES.block_size)
 
-    return jsonify(plain_text.decode("utf-8"), 200)
+    return jsonify(plain_text.decode('utf-8'), 200)
 
 def __generate_substitution_dict__(hashed_key):
     # Shuffle the wordset based off the hashed key

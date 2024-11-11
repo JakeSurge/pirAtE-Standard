@@ -11,7 +11,6 @@ PIRATE_TERMS = [
     "Barnacle",
     "Barnacle-Bill",
     "Barque",
-    "Yarrrrrrrrrrrrrrrrrrrrrrr",
     "Bart-Roberts",
     "Beacon",
     "Belay",
@@ -52,7 +51,6 @@ PIRATE_TERMS = [
     "Crossbones",
     "Crowbar",
     "Crow’s-Nest",
-    "Yarrrrrrr",
     "Cutlass",
     "Cutthroat",
     "Dagger",
@@ -104,7 +102,6 @@ PIRATE_TERMS = [
     "Hold",
     "Holdfast",
     "Hook",
-    "Yarrrrrrrrrr",
     "Jamboree",
     "Jetsam",
     "Jib",
@@ -212,7 +209,6 @@ PIRATE_TERMS = [
     "Skim",
     "Skipper",
     "Skirmish",
-    "Yarrrrr",
     "Sloop",
     "Smuggler",
     "Spinnaker",
@@ -250,11 +246,22 @@ PIRATE_TERMS = [
     "Windward",
     "Yardarm",
     "Yarr",
+    "Yarrrrr",
+    "Yarrrrrrr",
+    "Yarrrrrrrr",
+    "Yarrrrrrrrrr",
+    "Yarrrrrrrrrrrrrrrrrrrrrrr",
     "Yaw",
     "Yawl",
     "Ye",
     "Yo-ho-ho",
-    "Yarrrrrrrr",
 ]
+
+def __organize_wordset__():
+    # Sort
+    PIRATE_TERMS.sort()
+
+    # Print and manually copy output over PIRATE_TERMS in this file
+    print(PIRATE_TERMS)
 
 # https://www.youtube.com/watch?v=GI6CfKcMhjY
