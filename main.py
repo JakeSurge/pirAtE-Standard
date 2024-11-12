@@ -33,8 +33,8 @@ def get_encrypted_text():
 # Function that does the encryption/pirate substitution
 def __pirAtES__(plain_text, key):
     # Encode args so they play well with C
-    byte_plain_text = plain_text.encode('utf-8')
-    byte_key = key.encode('utf-8')
+    byte_plain_text = plain_text.encode()
+    byte_key = key.encode()
     
     # Create cipher
     cipher = AES.new(byte_key, AES.MODE_CBC, DEFAULT_IV)
@@ -75,7 +75,7 @@ def get_decrypted_text():
 # Function that undoes pirate substitution/decrypts
 def __undo_pirAtES__(pirate_text, key):
     # Encode key so it plays well with C
-    byte_key = key.encode('utf-8')
+    byte_key = key.encode()
     
     # Hash the key for unsubstituting
     hashed_key = hashlib.sha256(byte_key).digest()
@@ -92,13 +92,13 @@ def __undo_pirAtES__(pirate_text, key):
     # Decrypt the text
     plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)
 
-    return jsonify(plain_text.decode('utf-8'), 200)
+    return jsonify(plain_text.decode(), 200)
 
 def __substitute_pirate__(cipher_text, substitution_dict):
     # Loop through the cipher_text creating a new string object for the pirate version
     pirate_text = ''
     for byte in cipher_text:
-        pirate_text += ' ' + substitution_dict[bin(byte)]
+        pirate_text += ' ' + substitution_dict[byte]
     
     # Return pirate version
     return pirate_text
@@ -107,7 +107,7 @@ def __unsubstitute_pirate__(pirate_text, unsubstitution_dict):
     # Loop through the splitted pirate_text and get it back to cipher_text
     cipher_text = b''
     for pirate_term in pirate_text.split():
-        cipher_text += bytes(int(unsubstitution_dict[pirate_term], 2))
+        cipher_text += unsubstitution_dict[pirate_term].to_bytes()
     
     # Return cipher version
     return cipher_text
@@ -132,10 +132,12 @@ def __generate_unsubstitution_dict__(hashed_key):
     return substitution_dict
 
 def __generate_possible_bytes__():
-    # For number 0 - 255 convert to byte therefore covering every byte possible
+    # Generate list of number 0 - 255
+    # NOTE: Do note need to convert this to byte data type since iterating through
+    # a byte object turns the individual bytes to integers
     possible_bytes = []
     for num in range(256):
-        possible_bytes.append(bin(num))
+        possible_bytes.append(num)
 
     return possible_bytes
 
