@@ -53,6 +53,9 @@ def __substitute_pirate__(cipher_text, substitution_dict):
     for byte in cipher_text:
         pirate_text += ' ' + substitution_dict[byte]
     
+    # For a better look get rid of first space
+    pirate_text = pirate_text[1:]
+    
     return pirate_text
 
 def __unsubstitute_pirate__(pirate_text, unsubstitution_dict):
