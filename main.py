@@ -6,7 +6,7 @@ from pirAtES import pirAtES, unpirAtES
 app = Flask(__name__)
 
 # POST request for encryption
-@app.route('/get-piratified-text/', methods=['POST'])
+@app.route('/piratify', methods=['POST'])
 def get_encrypted_text():
     # Grab JSON and args
     try:
@@ -24,7 +24,7 @@ def get_encrypted_text():
     return jsonify(pirAtES(plain_text, key), 200)
 
 # POST request for decryption
-@app.route('/get-plain-text/', methods=['POST'])
+@app.route('/unpiratify', methods=['POST'])
 def get_decrypted_text():
     # Grab JSON and args
     try:
