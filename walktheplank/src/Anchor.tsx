@@ -1,6 +1,6 @@
 import "./index.css";
 import Button from "@mui/material/Button";
-import { TextField, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
 import { useState } from "react";
 import { piratify, unpiratify } from "./Kraken";
 
@@ -51,6 +51,13 @@ export const Anchor = ({
         console.error("Failed to copy text: ", err);
       });
   };
+
+  const isValidLength = (text: string): boolean => {
+    const validLengths = [16, 28, 32];
+    // Only check length validation for encrypt, always return true for decrypt
+    return buttonType === "decrypt" ? true : validLengths.includes(text.length);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="w-full max-w-md flex flex-col items-center space-y-6">
@@ -67,6 +74,18 @@ export const Anchor = ({
           className="w-full mb-4 "
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
+          error={
+            buttonType === "encrypt" &&
+            inputText.length > 0 &&
+            !isValidLength(inputText)
+          }
+          helperText={
+            buttonType === "encrypt" &&
+            inputText.length > 0 &&
+            !isValidLength(inputText)
+              ? "Text must be 16, 28, or 32 characters long"
+              : ""
+          }
           sx={{
             backgroundColor: "#e0e0e0", // Light grey
             "& .MuiFilledInput-root": {
@@ -81,6 +100,7 @@ export const Anchor = ({
           onClick={() => translateToOrFromPirate(inputText, buttonType)}
           className="mt-6 w-full px-4 py-2  text-white  transition duration-200"
           variant="outlined"
+          disabled={buttonType === "encrypt" && !isValidLength(inputText)}
           sx={{
             backgroundColor: "#ff7043",
             color: "#fff",
