@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import json
 
 from pirAtES import pirAtES, unpirAtES
 
 app = Flask(__name__)
+CORS(app)
 
 # POST request for encryption
 @app.route('/piratify', methods=['POST'])

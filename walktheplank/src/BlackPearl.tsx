@@ -13,6 +13,8 @@ interface TabPanelProps {
   value: number;
 }
 
+let mode = ""
+
 export type BlackPearlProps = {
   input?: string;
 };

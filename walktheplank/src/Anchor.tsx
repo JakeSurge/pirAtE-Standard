@@ -2,6 +2,7 @@ import "./index.css";
 import Button from "@mui/material/Button";
 import { TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import {piratify, unpiratify} from "./Kraken";
 
 export type ButtonType = "encrypt" | "decrypt";
 
@@ -22,14 +23,14 @@ export const Anchor = ({
   const [outputVisible, setOutputVisible] = useState(false);
   const [outputText, setOutputText] = useState("");
 
-  const toggleLabel = () => {
+  const toggleLabel = async () => {
     if (outputVisible) {
       setOutputText("");
     } else {
       if (buttonType === "encrypt") {
-        setOutputText("This is supposed to be encrypted text");
+        setOutputText(await piratify(outputText));
       } else {
-        setOutputText("This is supposed to be decrypted text");
+        setOutputText(await unpiratify(outputText));
       }
     }
     setOutputVisible(!outputVisible);
