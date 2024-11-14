@@ -1,9 +1,8 @@
 import axios from 'axios';
 
 const url = 'http://localhost:5000/'
-let key = '123456DOG1011129'
 
-export async function piratify(plainText: string): Promise<string>{
+export async function piratify(plainText: string, key: string): Promise<string>{
     try {
         const response = await axios.post(`${url}piratify`,{
                 plaintext: plainText,
@@ -20,7 +19,7 @@ export async function piratify(plainText: string): Promise<string>{
     }
 }
 
-export async function unpiratify(cipherText: string): Promise<string>{
+export async function unpiratify(cipherText: string, key: string): Promise<string>{
     try {
         const response = await axios.post(`${url}unpiratify`, {
             ciphertext: cipherText,
