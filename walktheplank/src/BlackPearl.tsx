@@ -94,7 +94,7 @@ export const BlackPearl = ({ initialStyle = "Serious" }: BlackPearlProps) => {
                   onChange={handleStyleToggle}
                 />
               }
-              label="Silly/Serious"
+              label="Boring/Fun theme"
               sx={{
                 "& .MuiFormControlLabel-label": {
                   color: "white",

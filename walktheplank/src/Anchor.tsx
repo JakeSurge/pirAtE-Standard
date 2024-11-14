@@ -126,7 +126,7 @@ export const Anchor = ({
           }
           className="mt-6  px-4 py-2  text-white  transition duration-200"
           variant="outlined"
-          disabled={buttonType === "encrypt" && !isValidLength(keyInput)}
+          disabled={!isValidLength(keyInput)}
           startIcon={buttonType === "encrypt" ? <LockIcon /> : <LockOpenIcon />}
           sx={{
             backgroundColor: buttonColor,
