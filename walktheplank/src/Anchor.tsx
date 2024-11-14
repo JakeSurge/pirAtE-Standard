@@ -2,7 +2,7 @@ import "./index.css";
 import Button from "@mui/material/Button";
 import { TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import {piratify, unpiratify} from "./Kraken";
+import { piratify, unpiratify } from "./Kraken";
 
 export type ButtonType = "encrypt" | "decrypt";
 
@@ -22,15 +22,19 @@ export const Anchor = ({
 }: BlackPearlProps) => {
   const [outputVisible, setOutputVisible] = useState(false);
   const [outputText, setOutputText] = useState("");
+  const [inputText, setInputText] = useState("");
 
-  const toggleLabel = async () => {
+  const translateToOrFromPirate = async (
+    inputText: string,
+    buttonType: ButtonType
+  ) => {
     if (outputVisible) {
       setOutputText("");
     } else {
       if (buttonType === "encrypt") {
-        setOutputText(await piratify(outputText));
+        setOutputText(await piratify(inputText));
       } else {
-        setOutputText(await unpiratify(outputText));
+        setOutputText(await unpiratify(inputText));
       }
     }
     setOutputVisible(!outputVisible);
@@ -61,6 +65,8 @@ export const Anchor = ({
           label={InputPlaceholder}
           variant="filled"
           className="w-full mb-4 "
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
           sx={{
             backgroundColor: "#e0e0e0", // Light grey
             "& .MuiFilledInput-root": {
@@ -72,7 +78,7 @@ export const Anchor = ({
           }}
         />
         <Button
-          onClick={toggleLabel}
+          onClick={() => translateToOrFromPirate(inputText, buttonType)}
           className="mt-6 w-full px-4 py-2  text-white  transition duration-200"
           variant="outlined"
           sx={{
