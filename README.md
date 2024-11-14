@@ -1,16 +1,21 @@
-# pirAtES
-### Additional Substitution Layer for Encryption
-The basic idea for this project is to add an a substitution layer after some form of block cipher encryption has been performed such as AES (hence the name). This will not just be any substitution layer, but a pirate substitution layer to abstract it more (and because its funny). This layer will be based upon a hashed version of the key used to encrypt so that way key length of the algorithm used does not matter.
-### How to Use
-1. First after cloning the repository down you need to install both Python and NPM dependencies for the back end and front end respectively.
+# pirAtES: Additional Substitution Layer for AES Encryption
+The basic idea for this project was to add a substitution layer after some form of block cipher encryption had been performed such as AES (hence the name). This is not just any substitution layer, but a pirate substitution layer to abstract it more (and because its funny). At a high level an S-box of sorts is made from shuffling a pirate wordset psuedorandomly using the same key used to encrypt with AES. The AES encrypted bytes are substituted out for pirate terms using this S-box making it "piratey".
+# Setup
+### Back End
+1. After cloning the repository locally, install the needed dependencies by using this command globally (**NOT RECOMMENDED**) or in a Python virtual environment located in the root folder of the repository (**Recommended**)
 
-Install Python Dependencies:
+    ```pip install -r requirements.txt```
+2. Next to start the Flask app (the API) simply run ```main.py```. If using a Python virtual environment make sure to run ```main.py``` in the activated environment.
 
-```pip install -r requirements.txt```
+    ```python main.py```
+### Front End
+1. Go into the React project (```\walktheplank\```) in the repository and run the following npm command to install the needed dependencies.
 
-Install NPM Dependencies:
+    ```npm install```
+2. After this in the same directory run the following command to start the React app (**WARNING**: Before starting the React app make sure the back end is up and running)
 
-```npm install```
+    ```npm start```
+<br>
 <div align="center">
 <pre>                                                
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
