@@ -26,7 +26,7 @@ def get_encrypted_text():
     elif len(key) != 16 and len(key) != 24 and len(key) != 32:
         return jsonify({'error': 'Improper key length only 16, 24, and 32 characters are supported'}), 400
 
-    return jsonify({'plaintext': pirAtES(plain_text, key)}), 200
+    return jsonify({'piratetext': pirAtES(plain_text, key)}), 200
 
 # POST request for decryption
 @app.route('/unpiratify', methods=['POST'])
@@ -47,7 +47,7 @@ def get_decrypted_text():
     elif len(key) != 16 and len(key) != 24 and len(key) != 32:
         return jsonify({'error': 'Improper key length only 16, 24, and 32 characters are supported'}), 400
 
-    return jsonify({'ciphertext': unpirAtES(cipher_text, key)}), 200
+    return jsonify({'plaintext': unpirAtES(cipher_text, key)}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)

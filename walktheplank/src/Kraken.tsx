@@ -11,7 +11,7 @@ export async function piratify(plainText: string, key: string): Promise<string>{
         );
         let myJSON = JSON.stringify(response);
         let obj = JSON.parse(myJSON)
-        return obj.data.plaintext
+        return obj.data.piratetext
     }
     catch(error) {
         console.error('You don broken the pratification!:', error);
@@ -27,7 +27,7 @@ export async function unpiratify(cipherText: string, key: string): Promise<strin
         });
         let myJSON = JSON.stringify(response);
         let obj = JSON.parse(myJSON)
-        return obj.data.ciphertext
+        return obj.data.plaintext
     }
     catch(error) {
         console.error('Captain, unpiratification failed!', error);
