@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import json
 
 from pirAtES import pirAtES, unpirAtES
 
@@ -11,10 +10,7 @@ CORS(app)
 @app.route('/piratify', methods=['POST'])
 def get_encrypted_text():
     # Grab JSON and args
-    try:
-        data = request.get_json()
-    except json.JSONDecodeError:
-        return jsonify({'error': 'Invalid JSON format'}), 400
+    data = request.get_json()
     
     plain_text = data.get('plaintext')
     key = data.get('key')
@@ -32,10 +28,7 @@ def get_encrypted_text():
 @app.route('/unpiratify', methods=['POST'])
 def get_decrypted_text():
     # Grab JSON and args
-    try:
-        data = request.json
-    except json.JSONDecodeError:
-        return jsonify({'error': 'Invalid JSON format'}), 400
+    data = request.get_json()
 
     cipher_text = data.get('ciphertext')
     key = data.get('key')
@@ -47,7 +40,16 @@ def get_decrypted_text():
     elif len(key) != 16 and len(key) != 24 and len(key) != 32:
         return jsonify({'error': 'Improper key length only 16, 24, and 32 characters are supported'}), 400
 
-    return jsonify({'plaintext': unpirAtES(cipher_text, key)}), 200
+    # Decrypt with try in case wrong password is used etc.
+    try:
+        plain_text = unpirAtES(cipher_text, key)
+    except:
+        return (
+            jsonify(
+                {'error': 'An error ocurred while decrypting. This could indicate improper credentials were used.'}), 
+                500)
+    
+    return jsonify({'plaintext': plain_text}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
