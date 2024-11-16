@@ -1,4 +1,4 @@
-# pirAtES: Additional Substitution Layer for AES Encryption
+# pirAtE Standard: Additional Substitution Layer for AES Encryption
 The basic idea for this project was to add a substitution layer after some form of block cipher encryption had been performed such as AES (hence the name). This is not just any substitution layer, but a pirate substitution layer to abstract it more (and because its funny). At a high level an S-box of sorts is made from shuffling a pirate wordset psuedorandomly using the same key used to encrypt with AES. The AES encrypted bytes are substituted out for pirate terms using this S-box making it "piratey".
 # Setup
 ### Back End
