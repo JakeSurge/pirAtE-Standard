@@ -9,15 +9,11 @@ DEFAULT_IV = b'0000000000000000'
 
 # Function that does the encryption/pirate substitution
 def pirAtES(plain_text, key):
-    # Encode args so they play well with C
-    byte_plain_text = plain_text.encode()
-    byte_key = key.encode()
-    
     # Create cipher
-    cipher = AES.new(byte_key, AES.MODE_CBC, DEFAULT_IV)
+    cipher = AES.new(key, AES.MODE_CBC, DEFAULT_IV)
 
     # Encrypt the text
-    cipher_text = cipher.encrypt(pad(byte_plain_text, AES.block_size))
+    cipher_text = cipher.encrypt(pad(plain_text, AES.block_size))
 
     # Generate substitution map
     substitution_dict = __generate_substitution_array__(key)
@@ -30,9 +26,6 @@ def pirAtES(plain_text, key):
 
 # Function that undoes pirate substitution/decrypts
 def unpirAtES(pirate_text, key):
-    # Encode key so it plays well with C
-    byte_key = key.encode()
-    
     # Generate unsubstitution map
     unsubstitution_dict = __generate_unsubstitution_dict__(key)
 
@@ -40,7 +33,7 @@ def unpirAtES(pirate_text, key):
     cipher_text = __unsubstitute_pirate__(pirate_text, unsubstitution_dict)
 
     # Create cipher
-    cipher = AES.new(byte_key, AES.MODE_CBC, DEFAULT_IV)
+    cipher = AES.new(key, AES.MODE_CBC, DEFAULT_IV)
 
     # Decrypt the text
     plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)
