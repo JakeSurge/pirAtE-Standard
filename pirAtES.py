@@ -8,56 +8,56 @@ from wordset import PIRATE_TERMS
 DEFAULT_IV = b'0000000000000000'
 
 # Function that does the encryption/pirate substitution
-def pirAtES(plain_text, key):
+def pirAtES(plaintext, key):
     # Create cipher
     cipher = AES.new(key, AES.MODE_CBC, DEFAULT_IV)
 
     # Encrypt the text
-    cipher_text = cipher.encrypt(pad(plain_text, AES.block_size))
+    ciphertext = cipher.encrypt(pad(plaintext, AES.block_size))
 
     # Generate substitution map
     substitution_dict = __generate_substitution_array__(key)
 
     # Substitute
-    piratified_text = __substitute_pirate__(cipher_text, substitution_dict)
+    piratified_text = __substitute_pirate__(ciphertext, substitution_dict)
 
     # Return pirate version - no need for encoding since it goes to string
     return piratified_text
 
 # Function that undoes pirate substitution/decrypts
-def unpirAtES(pirate_text, key):
+def unpirAtES(piratetext, key):
     # Generate unsubstitution map
     unsubstitution_dict = __generate_unsubstitution_dict__(key)
 
-    # Get the pirate_text to cipher_text to decrypt
-    cipher_text = __unsubstitute_pirate__(pirate_text, unsubstitution_dict)
+    # Get the piratetext to ciphertext to decrypt
+    ciphertext = __unsubstitute_pirate__(piratetext, unsubstitution_dict)
 
     # Create cipher
     cipher = AES.new(key, AES.MODE_CBC, DEFAULT_IV)
 
     # Decrypt the text
-    plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)
+    plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
 
-    return plain_text.decode()
+    return plaintext.decode()
 
-def __substitute_pirate__(cipher_text, substitution_dict):
-    # Loop through the cipher_text creating a new string object for the pirate version
-    pirate_text = ''
-    for byte in cipher_text:
-        pirate_text += ' ' + substitution_dict[byte]
+def __substitute_pirate__(ciphertext, substitution_dict):
+    # Loop through the ciphertext creating a new string object for the pirate version
+    piratetext = ''
+    for byte in ciphertext:
+        piratetext += ' ' + substitution_dict[byte]
     
     # For a better look get rid of first space
-    pirate_text = pirate_text[1:]
+    piratetext = piratetext[1:]
     
-    return pirate_text
+    return piratetext
 
-def __unsubstitute_pirate__(pirate_text, unsubstitution_dict):
-    # Loop through the splitted pirate_text and get it back to cipher_text
-    cipher_text = b''
-    for pirate_term in pirate_text.split():
-        cipher_text += unsubstitution_dict[pirate_term].to_bytes()
+def __unsubstitute_pirate__(piratetext, unsubstitution_dict):
+    # Loop through the splitted piratetext and get it back to ciphertext
+    ciphertext = b''
+    for pirate_term in piratetext.split():
+        ciphertext += unsubstitution_dict[pirate_term].to_bytes()
     
-    return cipher_text
+    return ciphertext
 
 # Helper functions for pirate substitution
 def __generate_substitution_array__(key):
