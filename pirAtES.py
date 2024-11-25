@@ -8,9 +8,13 @@ from wordset import PIRATE_TERMS
 DEFAULT_IV = b'0000000000000000'
 
 # Function that does the encryption/pirate substitution
-def pirAtES(plaintext, key):
+def pirAtES(plaintext, key, iv):
+    # If IV null use default
+    if iv == None:
+        iv = DEFAULT_IV
+    
     # Create cipher
-    cipher = AES.new(key, AES.MODE_CBC, DEFAULT_IV)
+    cipher = AES.new(key, AES.MODE_CBC, iv)
 
     # Encrypt the text
     ciphertext = cipher.encrypt(pad(plaintext, AES.block_size))
@@ -25,15 +29,19 @@ def pirAtES(plaintext, key):
     return piratified_text
 
 # Function that undoes pirate substitution/decrypts
-def unpirAtES(piratetext, key):
+def unpirAtES(piratetext, key, iv):
     # Generate unsubstitution map
     unsubstitution_dict = __generate_unsubstitution_dict__(key)
 
     # Get the piratetext to ciphertext to decrypt
     ciphertext = __unsubstitute_pirate__(piratetext, unsubstitution_dict)
 
+    # If IV null use default
+    if iv == None:
+        iv = DEFAULT_IV
+
     # Create cipher
-    cipher = AES.new(key, AES.MODE_CBC, DEFAULT_IV)
+    cipher = AES.new(key, AES.MODE_CBC, iv)
 
     # Decrypt the text
     plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
