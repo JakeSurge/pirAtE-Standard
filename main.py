@@ -21,11 +21,7 @@ def get_encrypted_text():
         return args
     
     # Grab formatted data
-    iv = None
-    if len(args) == 2:
-        plaintext, key = args
-    else:
-        plaintext, key, iv = args
+    plaintext, key, iv = args
 
     return jsonify({'piratetext': pirAtES(plaintext.encode(), key, iv)}), 200
 
@@ -43,11 +39,7 @@ def get_decrypted_text():
         return args
     
     # Grab formatted data
-    iv = None
-    if len(args) == 2:
-        piratetext, key = args
-    else:
-        piratetext, key, iv = args
+    piratetext, key, iv = args
 
 
     # Decrypt with try in case wrong password is used etc.
@@ -95,7 +87,8 @@ def __validate_and_format_data__(data, text_key):
         iv = data['iv']['ivValue']
         ivFormat = data['iv']['ivFormat']
     except:
-        print('No IV data given will use default IV value')
+        print('Missing IV data will use default value instead')
+        byte_iv = None
     else:
         # Verify data type
         if type(iv) != str and type(ivFormat) != str:
@@ -115,12 +108,9 @@ def __validate_and_format_data__(data, text_key):
         # Validate the IV length
         if len(byte_iv) != 16:
             return jsonify({'error': 'Improper IV length. Must be 16 bytes long'}), 400
-        
-        # Return with iv
-        return text, byte_key, byte_iv
 
     # Return validated data
-    return text, byte_key
+    return text, byte_key, byte_iv
 
 
 if __name__ == "__main__":
