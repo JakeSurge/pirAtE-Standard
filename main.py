@@ -78,7 +78,7 @@ def __validate_and_format_data__(data, text_key):
         iv = data['iv']['ivValue']
         ivFormat = data['iv']['ivFormat']
     except:
-        print('Missing IV data will use default value instead')
+        app.logger.info('Missing IV data will use default value instead')
         byte_iv = None
     else:
         # Verify data type
