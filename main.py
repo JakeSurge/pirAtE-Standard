@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 import base64
 
@@ -15,10 +15,6 @@ def get_encrypted_text():
 
     # Validate and encode data
     args = __validate_and_format_data__(data, 'plaintext')
-
-    # If there was an error than return that
-    if type(args[1]) == int:
-        return args
     
     # Grab formatted data
     plaintext, key, iv = args
@@ -33,23 +29,18 @@ def get_decrypted_text():
 
     # Validate and encode data
     args = __validate_and_format_data__(data, 'piratetext')
-
-    # If there was an error than return that
-    if type(args[1]) == int:
-        return args
     
     # Grab formatted data
     piratetext, key, iv = args
-
 
     # Decrypt with try in case wrong password is used etc.
     try:
         plaintext = unpirAtES(piratetext, key, iv)
     except:
-        return (
-            jsonify(
-                {'error': 'An error occurred while decrypting. Improper credentials or piratetext were most likely used.'}), 
-                500)
+        abort(
+            500,
+            'An error occurred while decrypting. Improper credentials or piratetext were most likely used.'
+            ) 
     
     return jsonify({'plaintext': plaintext}), 200
 
@@ -61,11 +52,11 @@ def __validate_and_format_data__(data, text_key):
         key = data['key']['keyValue']
         keyFormat = data['key']['keyFormat']
     except:
-        return jsonify({'error': 'Missing JSON data'}), 400
+        abort(400, 'Missing JSON data')
     
     # Validate all required data is string
     if type(text) != str and type(key) != str and type(keyFormat) != str:
-        return jsonify({'error', 'All required JSON values must be string'}), 400
+        abort(400, 'All required JSON values must be string')
     
     # Get the key for both formats to byte object
     if keyFormat.lower() == 'utf-8':
@@ -74,13 +65,13 @@ def __validate_and_format_data__(data, text_key):
         try:
             byte_key = base64.b64decode(key)
         except:
-            return jsonify({'error': 'Improper Base64 key. It is is not formatted correctly'}), 400
+            abort(400, 'Improper Base64 key. It is is not formatted correctly')
     else:
-        return jsonify({'error': 'Improper keyFormat specified. Use Base64 or UTF-8'}), 400
+        abort(400, 'Improper keyFormat specified. Use Base64 or UTF-8')
     
     # Validate key length
     if len(byte_key) != 16 and len(byte_key) != 24 and len(byte_key) != 32:
-        return jsonify({'error': 'Improper key length. Must be 16, 24, or 32 bytes long'}), 400
+        abort(400, 'Improper key length. Must be 16, 24, or 32 bytes long')
     
     # Now check for optional IV data
     try:
@@ -92,7 +83,7 @@ def __validate_and_format_data__(data, text_key):
     else:
         # Verify data type
         if type(iv) != str and type(ivFormat) != str:
-            return jsonify({'error': 'IV data must be string'}), 400
+            abort(400, 'IV data must be string')
         
         # Get the key for both formats to byte object
         if ivFormat.lower() == 'utf-8':
@@ -101,13 +92,13 @@ def __validate_and_format_data__(data, text_key):
             try:
                 byte_iv = base64.b64decode(iv)
             except:
-                return jsonify({'error': 'Improper Base64 key. It is is not formatted correctly.'}), 400
+                abort(400, 'Improper Base64 key. It is is not formatted correctly.')
         else:
-            return jsonify({'error': 'Improper ivFormat specified. Use Base64 or UTF-8'}), 400
+            abort(400, 'Improper ivFormat specified. Use Base64 or UTF-8')
         
         # Validate the IV length
         if len(byte_iv) != 16:
-            return jsonify({'error': 'Improper IV length. Must be 16 bytes long'}), 400
+            abort(400, 'Improper IV length. Must be 16 bytes long')
 
     # Return validated data
     return text, byte_key, byte_iv
