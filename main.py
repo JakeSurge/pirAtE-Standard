@@ -105,4 +105,4 @@ def __validate_and_format_data__(data, text_key):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
