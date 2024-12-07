@@ -40,7 +40,7 @@ def get_decrypted_text():
         abort(
             500,
             'An error occurred while decrypting. Improper credentials or piratetext were most likely used.'
-            ) 
+            )
     
     return jsonify({'plaintext': plaintext}), 200
 
@@ -56,7 +56,7 @@ def __validate_and_format_data__(data, text_key):
     
     # Validate all required data is string
     if type(text) != str and type(key) != str and type(keyFormat) != str:
-        abort(400, 'All required JSON values must be string')
+        abort(400, 'Key and text JSON values must be string')
     
     # Get the key for both formats to byte object
     if keyFormat.lower() == 'utf-8':
@@ -83,7 +83,7 @@ def __validate_and_format_data__(data, text_key):
     else:
         # Verify data type
         if type(iv) != str and type(ivFormat) != str:
-            abort(400, 'IV data must be string')
+            abort(400, 'IV JSON values must be string')
         
         # Get the key for both formats to byte object
         if ivFormat.lower() == 'utf-8':
@@ -92,7 +92,7 @@ def __validate_and_format_data__(data, text_key):
             try:
                 byte_iv = base64.b64decode(iv)
             except:
-                abort(400, 'Improper Base64 key. It is is not formatted correctly.')
+                abort(400, 'Improper Base64 IV. It is is not formatted correctly.')
         else:
             abort(400, 'Improper ivFormat specified. Use Base64 or UTF-8')
         
