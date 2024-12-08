@@ -6,7 +6,6 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -15,8 +14,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Switch from "@mui/material/Switch";
@@ -106,7 +103,8 @@ export const PirateDashboard: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [style, setStyle] = React.useState<"Serious" | "Silly">("Serious");
-  const [aesMode, setAesMode] = React.useState<"ECB" | "CBC">("ECB");
+  const [aesMode, setAesMode] = React.useState<"ecb" | "cbc">("ecb");
+  const [format, setFormat] = React.useState<"utf-8" | "base64">("utf-8");
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
@@ -120,7 +118,10 @@ export const PirateDashboard: React.FC = () => {
   };
 
   const handleAesModeToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAesMode(event.target.checked ? "CBC" : "ECB");
+    setAesMode(event.target.checked ? "cbc" : "ecb");
+  };
+  const handleFormatToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormat(event.target.checked ? "base64" : "utf-8");
   };
 
   const backgroundColor =
@@ -260,11 +261,25 @@ export const PirateDashboard: React.FC = () => {
             <FormControlLabel
               control={
                 <Switch
-                  checked={aesMode === "CBC"}
+                  checked={aesMode === "cbc"}
                   onChange={handleAesModeToggle}
                 />
               }
               label="Mode: ECB/CBC"
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  color: themeStyle.color,
+                },
+              }}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={format === "base64"}
+                  onChange={handleFormatToggle}
+                />
+              }
+              label="Mode: UTF-8/Base64"
               sx={{
                 "& .MuiFormControlLabel-label": {
                   color: themeStyle.color,
@@ -283,6 +298,7 @@ export const PirateDashboard: React.FC = () => {
             buttonType="encrypt"
             isSerious={style === "Serious"}
             aesMode={aesMode}
+            utfOrBase64={format}
           />
         )}
         {value === 1 && (
@@ -294,6 +310,7 @@ export const PirateDashboard: React.FC = () => {
             buttonType="decrypt"
             isSerious={style === "Serious"}
             aesMode={aesMode}
+            utfOrBase64={format}
           />
         )}
       </Box>

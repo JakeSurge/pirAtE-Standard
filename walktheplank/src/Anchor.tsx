@@ -6,6 +6,7 @@ import { piratify, unpiratify } from "./Kraken";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { Key, IV } from "./Kraken";
 
 export type ButtonType = "encrypt" | "decrypt";
 
@@ -18,6 +19,7 @@ export type AnchorProps = {
   KeyInputPlaceholder: string;
   isSerious: boolean;
   aesMode: string;
+  utfOrBase64: string;
 };
 
 export const Anchor = ({
@@ -28,27 +30,37 @@ export const Anchor = ({
   KeyInputPlaceholder,
   isSerious,
   aesMode,
+  utfOrBase64,
 }: AnchorProps) => {
   const [outputVisible, setOutputVisible] = useState(false);
   const [outputText, setOutputText] = useState("");
   const [inputText, setInputText] = useState("");
-  const [keyInput, setKeyInput] = useState("");
-  const [ivInput, setIVInput] = useState("");
+
+  // Updated state variables
+  const [keyInput, setKeyInput] = useState<Key>({
+    keyValue: "",
+    keyFormat: "",
+  });
+
+  const [ivInput, setIVInput] = useState<IV>({
+    ivValue: "",
+    ivFormat: "",
+  });
 
   const translateToOrFromPirate = async (
     inputText: string,
-    keyInput: string,
+    key: Key,
     aesMode: string,
     buttonType: ButtonType,
-    ivInput: string
+    iv: IV
   ) => {
     if (outputVisible) {
       setOutputText("");
     } else {
       if (buttonType === "encrypt") {
-        setOutputText(await piratify(inputText, keyInput, aesMode, ivInput));
+        setOutputText(await piratify(inputText, key, aesMode, iv));
       } else {
-        setOutputText(await unpiratify(inputText, keyInput, aesMode, ivInput));
+        setOutputText(await unpiratify(inputText, key, aesMode, iv));
       }
     }
     setOutputVisible(!outputVisible);
@@ -58,7 +70,6 @@ export const Anchor = ({
     navigator.clipboard
       .writeText(textToCopy)
       .then(() => {
-        // You can add a notification here if you want to inform the user that the text has been copied
         console.log("Text copied to clipboard");
       })
       .catch((err) => {
@@ -66,9 +77,25 @@ export const Anchor = ({
       });
   };
 
-  const isValidLength = (text: string): boolean => {
-    const validLengths = [16, 24, 32];
-    return validLengths.includes(text.length);
+  const isValidLength = (
+    text: string,
+    type: "key" | "iv",
+    format: string
+  ): boolean => {
+    if (format === "utf-8") {
+      const validKeyLengths = [16, 24, 32];
+      const validIVLengths = [16];
+      return type === "key"
+        ? validKeyLengths.includes(text.length)
+        : validIVLengths.includes(text.length);
+    } else if (format === "base64") {
+      const validKeyLengths = [24, 32, 44];
+      const validIVLengths = [24];
+      return type === "key"
+        ? validKeyLengths.includes(text.length)
+        : validIVLengths.includes(text.length);
+    }
+    return false;
   };
 
   const buttonColor = isSerious ? "#f5f5f5" : "#4caf50";
@@ -86,7 +113,7 @@ export const Anchor = ({
           id="filled-basic"
           label={InputPlaceholder}
           variant="filled"
-          className="w-full mb-4 "
+          className="w-full mb-4"
           value={inputText}
           multiline
           onChange={(e) => setInputText(e.target.value)}
@@ -105,13 +132,21 @@ export const Anchor = ({
           id="filled-basic"
           label={KeyInputPlaceholder}
           variant="filled"
-          className="w-full mb-4 "
-          value={keyInput}
-          onChange={(e) => setKeyInput(e.target.value)}
-          error={keyInput.length > 0 && !isValidLength(keyInput)}
+          className="w-full mb-4"
+          value={keyInput.keyValue}
+          onChange={(e) =>
+            setKeyInput({ ...keyInput, keyValue: e.target.value })
+          }
+          error={
+            keyInput.keyValue.length > 0 &&
+            !isValidLength(keyInput.keyValue, "key", utfOrBase64)
+          }
           helperText={
-            keyInput.length > 0 && !isValidLength(keyInput)
-              ? "Text must be 16, 24, or 32 characters long"
+            keyInput.keyValue.length > 0 &&
+            !isValidLength(keyInput.keyValue, "key", utfOrBase64)
+              ? utfOrBase64 === "utf-8"
+                ? "Key must be 16, 24, or 32 characters long"
+                : "Key must be 24, 32, or 44 characters long"
               : ""
           }
           sx={{
@@ -125,18 +160,26 @@ export const Anchor = ({
           }}
         />
 
-        {aesMode === "CBC" && ( // Conditionally render IV input
+        {aesMode === "cbc" && (
           <TextField
             id="filled-basic"
             label="Initialization Vector (IV)"
             variant="filled"
             className="w-full mb-4"
-            value={ivInput}
-            onChange={(e) => setIVInput(e.target.value)}
-            error={ivInput.length > 0 && ivInput.length !== 16}
+            value={ivInput.ivValue}
+            onChange={(e) =>
+              setIVInput({ ...ivInput, ivValue: e.target.value })
+            }
+            error={
+              ivInput.ivValue.length > 0 &&
+              !isValidLength(ivInput.ivValue, "iv", utfOrBase64)
+            }
             helperText={
-              ivInput.length > 0 && ivInput.length !== 16
-                ? "IV must be 16 characters long"
+              ivInput.ivValue.length > 0 &&
+              !isValidLength(ivInput.ivValue, "iv", utfOrBase64)
+                ? utfOrBase64 === "utf-8"
+                  ? "IV must be 16 characters long"
+                  : "IV must be 24 characters long"
                 : ""
             }
             sx={{
@@ -155,15 +198,15 @@ export const Anchor = ({
           onClick={() =>
             translateToOrFromPirate(
               inputText,
-              keyInput,
+              { keyValue: keyInput.keyValue, keyFormat: utfOrBase64 }, // Pass keyInput.keyValue and utfOrBase64
               aesMode,
               buttonType,
               ivInput
             )
           }
-          className="mt-6  px-4 py-2  text-white  transition duration-200"
+          className="mt-6 px-4 py-2 text-white transition duration-200"
           variant="outlined"
-          disabled={!isValidLength(keyInput)}
+          disabled={!isValidLength(keyInput.keyValue, "key", utfOrBase64)}
           startIcon={buttonType === "encrypt" ? <LockIcon /> : <LockOpenIcon />}
           sx={{
             backgroundColor: buttonColor,
@@ -184,10 +227,8 @@ export const Anchor = ({
               variant="filled"
               className="w-full mb-4"
               multiline
-              slotProps={{
-                input: {
-                  readOnly: true,
-                },
+              inputProps={{
+                readOnly: true,
               }}
               sx={{
                 backgroundColor: "#e0e0e0",
@@ -202,7 +243,7 @@ export const Anchor = ({
             <div className="flex space-x-3">
               <Button
                 onClick={() => copyToClipboard(outputText)}
-                className="mt-2  px-4 py-2 text-white transition duration-200"
+                className="mt-2 px-4 py-2 text-white transition duration-200"
                 variant="outlined"
                 startIcon={<ContentCopyIcon />}
                 sx={{
@@ -216,7 +257,7 @@ export const Anchor = ({
                 Copy Output
               </Button>
               <Button
-                onClick={() => copyToClipboard(keyInput)}
+                onClick={() => copyToClipboard(keyInput.keyValue)}
                 startIcon={<ContentCopyIcon />}
                 className="mt-2 px-4 py-2 text-white transition duration-200"
                 variant="outlined"

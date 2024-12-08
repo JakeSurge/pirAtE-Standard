@@ -2,19 +2,31 @@ import axios from 'axios';
 
 const url = "http://127.0.0.1:5000/";
 
+export type Key = {
+  keyValue: string;
+  keyFormat: string;
+};
+
+export type IV = {
+  ivValue: string;
+  ivFormat: string;
+};
+
 export async function piratify(
   plainText: string,
-  key: string,
+  key: Key,
   aesMode: string,
-  iv: string
+  iv?: IV
 ): Promise<string> {
   try {
+    // Determine if iv should be included based on key format
     const requestBody = {
       plaintext: plainText,
       key: key,
-      aes_mode: aesMode,
-      iv: iv || undefined,
+      aesMode: aesMode,
+      ...(key.keyFormat !== "utf-8" && { iv: iv }), // Only include iv if key format is not utf-8
     };
+
     console.log("Request body:", requestBody);
 
     const response = await axios.post(`${url}piratify`, requestBody);
@@ -26,11 +38,12 @@ export async function piratify(
   }
 }
 
+
 export async function unpiratify(
   cipherText: string,
-  key: string,
+  key: Key,
   aesMode: string,
-  iv: string
+  iv: IV
 ): Promise<string> {
   try {
     const response = await axios.post(`${url}unpiratify`, {
