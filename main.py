@@ -12,6 +12,7 @@ CORS(app)
 def get_encrypted_text():
     # Grab JSON and args
     data = request.get_json()
+    print("Incoming Request Data:", data)
 
     # Validate and encode data
     plaintext, key, aes_mode, iv = __validate_and_format_data__(data, is_encrypting=True)
