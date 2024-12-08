@@ -4,18 +4,19 @@ import random
 
 from wordset import PIRATE_TERMS
 
-# Standard IV to use
-DEFAULT_IV = b'0000000000000000'
-
 # Function that does the encryption/pirate substitution
-def pirAtES(plaintext, key, iv):
-    # If IV null use default
-    if iv == None:
-        iv = DEFAULT_IV
+def pirAtES(plaintext, key, aes_mode, iv):
+    # Create cipher dependent upon mode and if IV provided
+    if aes_mode == AES.MODE_ECB:
+        cipher = AES.new(key, AES.MODE_ECB)
+    elif aes_mode == AES.MODE_CBC and iv == None:
+        cipher = AES.new(key, AES.MODE_CBC)
+        iv = cipher.iv
+    elif aes_mode == AES.MODE_CBC and iv != None:
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+    else:
+        raise Exception('Error improper AES mode passed')
     
-    # Create cipher
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-
     # Encrypt the text
     ciphertext = cipher.encrypt(pad(plaintext, AES.block_size))
 
@@ -25,23 +26,27 @@ def pirAtES(plaintext, key, iv):
     # Substitute
     piratified_text = __substitute_pirate__(ciphertext, substitution_dict)
 
-    # Return pirate version - no need for encoding since it goes to string
-    return piratified_text
+    # Return pirate version and iv
+    return piratified_text, iv
 
 # Function that undoes pirate substitution/decrypts
-def unpirAtES(piratetext, key, iv):
+def unpirAtES(piratetext, key, aes_mode, iv):
     # Generate unsubstitution map
     unsubstitution_dict = __generate_unsubstitution_dict__(key)
 
     # Get the piratetext to ciphertext to decrypt
     ciphertext = __unsubstitute_pirate__(piratetext, unsubstitution_dict)
 
-    # If IV null use default
-    if iv == None:
-        iv = DEFAULT_IV
-
-    # Create cipher
-    cipher = AES.new(key, AES.MODE_CBC, iv)
+    # Create cipher dependent upon mode and if IV provided
+    if aes_mode == AES.MODE_ECB:
+        cipher = AES.new(key, AES.MODE_ECB)
+    elif aes_mode == AES.MODE_CBC and iv == None:
+        cipher = AES.new(key, AES.MODE_CBC)
+        iv = cipher.iv
+    elif aes_mode == AES.MODE_CBC and iv != None:
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+    else:
+        raise Exception('Error improper AES mode passed')
 
     # Decrypt the text
     plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
