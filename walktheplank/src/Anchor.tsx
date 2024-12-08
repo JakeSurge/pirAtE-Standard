@@ -9,7 +9,7 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 export type ButtonType = "encrypt" | "decrypt";
 
-export type BlackPearlProps = {
+export type AnchorProps = {
   image: string;
   input?: string;
   buttonText: string;
@@ -17,6 +17,7 @@ export type BlackPearlProps = {
   InputPlaceholder: string;
   KeyInputPlaceholder: string;
   isSerious: boolean;
+  aesMode: string;
 };
 
 export const Anchor = ({
@@ -26,24 +27,28 @@ export const Anchor = ({
   InputPlaceholder,
   KeyInputPlaceholder,
   isSerious,
-}: BlackPearlProps) => {
+  aesMode,
+}: AnchorProps) => {
   const [outputVisible, setOutputVisible] = useState(false);
   const [outputText, setOutputText] = useState("");
   const [inputText, setInputText] = useState("");
   const [keyInput, setKeyInput] = useState("");
+  const [ivInput, setIVInput] = useState("");
 
   const translateToOrFromPirate = async (
     inputText: string,
     keyInput: string,
-    buttonType: ButtonType
+    aesMode: string,
+    buttonType: ButtonType,
+    ivInput: string
   ) => {
     if (outputVisible) {
       setOutputText("");
     } else {
       if (buttonType === "encrypt") {
-        setOutputText(await piratify(inputText, keyInput));
+        setOutputText(await piratify(inputText, keyInput, aesMode, ivInput));
       } else {
-        setOutputText(await unpiratify(inputText, keyInput));
+        setOutputText(await unpiratify(inputText, keyInput, aesMode, ivInput));
       }
     }
     setOutputVisible(!outputVisible);
@@ -120,9 +125,41 @@ export const Anchor = ({
           }}
         />
 
+        {aesMode === "CBC" && ( // Conditionally render IV input
+          <TextField
+            id="filled-basic"
+            label="Initialization Vector (IV)"
+            variant="filled"
+            className="w-full mb-4"
+            value={ivInput}
+            onChange={(e) => setIVInput(e.target.value)}
+            error={ivInput.length > 0 && ivInput.length !== 16}
+            helperText={
+              ivInput.length > 0 && ivInput.length !== 16
+                ? "IV must be 16 characters long"
+                : ""
+            }
+            sx={{
+              backgroundColor: "#e0e0e0",
+              "& .MuiFilledInput-root": {
+                color: "#37474f",
+              },
+              "& .MuiInputLabel-root": {
+                color: "#37474f",
+              },
+            }}
+          />
+        )}
+
         <Button
           onClick={() =>
-            translateToOrFromPirate(inputText, keyInput, buttonType)
+            translateToOrFromPirate(
+              inputText,
+              keyInput,
+              aesMode,
+              buttonType,
+              ivInput
+            )
           }
           className="mt-6  px-4 py-2  text-white  transition duration-200"
           variant="outlined"

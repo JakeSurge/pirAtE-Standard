@@ -1,9 +1,9 @@
-import { BlackPearl } from "./BlackPearl";
+import { PirateDashboard } from "./PirateDashboard";
 
 function App() {
   return (
     <div>
-      <BlackPearl />
+      <PirateDashboard />
     </div>
   );
 }
