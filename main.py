@@ -14,13 +14,16 @@ def get_encrypted_text():
     data = request.get_json()
 
     # Validate and encode data
-    plaintext, key, aes_mode, iv = __validate_and_format_data__(data, 'plaintext')
+    plaintext, key, aes_mode, iv = __validate_and_format_data__(data, is_encrypting=True)
 
     # Piratify the plaintext
     piratetext, iv_used = pirAtES(plaintext.encode(), key, aes_mode, iv)
 
-    # Return piratetext and IV in Base64 so it is guaranteed to work
-    return jsonify({'piratetext': piratetext, 'iv': base64.b64encode(iv_used).decode()}), 200
+    # Return piratetext with IV (in Base64) if it is used
+    if iv_used == None:
+        return jsonify({'piratetext': piratetext}), 200
+    else:
+        return jsonify({'piratetext': piratetext, 'iv': base64.b64encode(iv_used).decode()}), 200
 
 # POST request for decryption
 @app.route('/unpiratify', methods=['POST'])
@@ -29,11 +32,7 @@ def get_decrypted_text():
     data = request.get_json()
 
     # Validate and encode data
-    piratetext, key, aes_mode, iv = __validate_and_format_data__(data, 'piratetext')
-
-    # Set IV to value if not set to anything
-    if iv == None:
-        iv = b'0000000000000000'
+    piratetext, key, aes_mode, iv = __validate_and_format_data__(data, is_encrypting=False)
 
     # Decrypt with try in case wrong password is used etc.
     try:
@@ -47,7 +46,15 @@ def get_decrypted_text():
     return jsonify({'plaintext': plaintext}), 200
 
 # Function for validating and formatting JSON data sent for POST requests
-def __validate_and_format_data__(data, text_key):
+def __validate_and_format_data__(data, is_encrypting):
+    # Set values up if encrypting or decrypting
+    if is_encrypting == True:
+        text_key = 'plaintext'
+        iv_required = False
+    else:
+        text_key = 'piratetext'
+        iv_required = True
+    
     # Validate required arg data is there
     try:
         text = data[text_key]
@@ -60,14 +67,6 @@ def __validate_and_format_data__(data, text_key):
     # Validate all required data is string
     if type(text) != str or type(aes_mode) != str or type(key) != str or type(keyFormat) != str:
         abort(400, 'Text, mode, and key JSON values must be string')
-    
-    # Validate AES mode and return value accordingly
-    if aes_mode.lower() == 'ecb':
-        aes_mode_num = 1
-    elif aes_mode.lower() == 'cbc':
-        aes_mode_num = 2
-    else:
-        abort(400, "Improper AES mode specified. Use ECB or CBC")
 
     # Get the key to byte object
     byte_key = __value_to_byte__(keyFormat, key)
@@ -75,26 +74,38 @@ def __validate_and_format_data__(data, text_key):
     # Validate key length
     if len(byte_key) != 16 and len(byte_key) != 24 and len(byte_key) != 32:
         abort(400, 'Improper key length. Must be 16, 24, or 32 bytes long')
-    
-    # Now check for optional IV data
-    try:
-        iv = data['iv']['ivValue']
-        ivFormat = data['iv']['ivFormat']
-    except:
-        app.logger.info('Missing IV data will use default value instead')
-        byte_iv = None
-    else:
-        # Verify data type
-        if type(iv) != str or type(ivFormat) != str:
-            abort(400, 'IV JSON values must be string')
-        
-        # Get the IV to byte object
-        byte_iv = __value_to_byte__(ivFormat, iv)
-        
-        # Validate the IV length
-        if len(byte_iv) != 16:
-            abort(400, 'Improper IV length. Must be 16 bytes long')
 
+    # Validate AES mode and return according value
+    if aes_mode.lower() == 'ecb':
+        aes_mode_num = 1
+        return text, byte_key, aes_mode_num, None
+    elif aes_mode.lower() == 'cbc':
+        aes_mode_num = 2
+        
+        # Check for optional IV data
+        try:
+            iv = data['iv']['ivValue']
+            ivFormat = data['iv']['ivFormat']
+        except:
+            if iv_required:
+                abort(400, 'IV is required to decrypt')
+            else:
+                app.logger.info('Missing IV data will use randomly generated IV instead')
+                return text, byte_key, aes_mode_num, None
+        else:
+            # Verify data type
+            if type(iv) != str or type(ivFormat) != str:
+                abort(400, 'IV JSON values must be string')
+            
+            # Get the IV to byte object
+            byte_iv = __value_to_byte__(ivFormat, iv)
+            
+            # Validate the IV length
+            if len(byte_iv) != 16:
+                abort(400, 'Improper IV length. Must be 16 bytes long')
+    else:
+        abort(400, "Improper AES mode specified. Use ECB or CBC")
+    
     # Return validated data
     return text, byte_key, aes_mode_num, byte_iv
 

@@ -41,8 +41,7 @@ def unpirAtES(piratetext, key, aes_mode, iv):
     if aes_mode == AES.MODE_ECB:
         cipher = AES.new(key, AES.MODE_ECB)
     elif aes_mode == AES.MODE_CBC and iv == None:
-        cipher = AES.new(key, AES.MODE_CBC)
-        iv = cipher.iv
+        raise Exception('Error IV must be provided to decrypt in CBC mode')
     elif aes_mode == AES.MODE_CBC and iv != None:
         cipher = AES.new(key, AES.MODE_CBC, iv)
     else:
