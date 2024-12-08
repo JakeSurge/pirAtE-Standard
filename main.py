@@ -12,7 +12,6 @@ CORS(app)
 def get_encrypted_text():
     # Grab JSON and args
     data = request.get_json()
-    print("Incoming Request Data:", data)
 
     # Validate and encode data
     plaintext, key, aes_mode, iv = __validate_and_format_data__(data, is_encrypting=True)
@@ -66,8 +65,7 @@ def __validate_and_format_data__(data, is_encrypting):
         abort(400, 'Missing JSON data')
     
     # Validate all required data is string
-    if type(text) != str or type(aes_mode) != str or type(key) != str or type(keyFormat) != str:
-        abort(400, 'Text, mode, and key JSON values must be string')
+    __validate_is_string__(text, aes_mode, key, keyFormat)
 
     # Get the key to byte object
     byte_key = __value_to_byte__(keyFormat, key)
@@ -95,8 +93,7 @@ def __validate_and_format_data__(data, is_encrypting):
                 return text, byte_key, aes_mode_num, None
         else:
             # Verify data type
-            if type(iv) != str or type(ivFormat) != str:
-                abort(400, 'IV JSON values must be string')
+            __validate_is_string__(iv, ivFormat)
             
             # Get the IV to byte object
             byte_iv = __value_to_byte__(ivFormat, iv)
@@ -124,6 +121,12 @@ def __value_to_byte__(format, value):
             abort(400, 'Improper format specified. Use Base64 or UTF-8')
         
         return byte_value
+
+# Validates args sent are string value
+def __validate_is_string__(*values):
+    for value in values:
+        if type(value) != str:
+            abort(400, 'All values must be string')
 
 
 if __name__ == "__main__":
