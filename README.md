@@ -25,9 +25,9 @@ The basic idea for this project was to add a substitution layer after some form 
 ## /piratify
 This is the call for blah blah blah
 ### Request Example:
-```
+```json
 {
-    "plaintext": "I’m dishonest, and a dishonest man you can always trust to be dishonest. Honestly. It’s the honest ones you want to watch out for, because you can never predict when they’re going to do something incredibly … stupid.",
+    "plaintext": "Ahoy World!",
     "key": {
         "keyValue": "MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=",
         "keyFormat": "base64"
@@ -40,18 +40,18 @@ This is the call for blah blah blah
 }
 ```
 ### Response Example:
-```
+```json
 {
     "iv": "MTIzNDU2NzgxMjM0NTY3OA==",
-    "piratetext": "Sink Lurker Harbormaster Holdfast Watch Anchor Rum-pirate Bilge Deadeye Buoy Shrouds Salty-sea Land-ho! Avast Hold High-seas Sea-Dog Rip Black-Pearl Lanyard Avast Flag Jamboree Billet Christopher-Condent Shipmate Christopher-Condent Blackbeard Foil Calico-Jack Scud High-seas Corsair Doldrums Dead-men-tell-no-tales Picaroon Barque Barnacle Nest Windward Galleon Rover Rigger Rum Swindle Quay Coast Lurker Yawl Sternchaser Dhow Deadeye Briny Spyglass Black-flag Scuttlebutt First-mate Chum Ghost-ship Briny Reef-parrot Shackle Salty-sea Maroon Sink Rip Blackbeard Blackbeard Shrouds Stave Treasure Windjammer Anne-Bonny Shipmate Sea-Dog Galleon Rumrunner Crowbar Bottom Shipmate Sea-serpent Loop Capstan Topmast Yarrrrrrrrrrrrrrrrrrrrrrr First-mate Mast Another-Ship-Of-William-Kidd Tiller Treachery Black-flag Sloop Rigging Sabre Foul-weather Yarr Black-Pearl Jetsam Sloop Quarter Barnacle Ransom Bilge Land-ho! Skallywag Edward-England Avast Sea-spray Harbormaster Christopher-Condent Sea-serpent Dead-men’s-chest Scavenger Rigging Fortune Booty Edward-England Shipmate Sea-spray Tiller Lurker Quarter Weather Swindle Sea-king Queen-Annes-Revenge Loop Lantern Spinnaker Nautical-chart Marooner Cutlass Fathom Sternchaser Jib Yarrrrrrrrrr Deck Windward Tidal-wave Matey Picaroon Another-Ship-Of-William-Kidd Beacon Chainshot Sternchaser Malarkey Sea-serpent Siren Fluke Smuggler Foil Land-ho! Jibboom Skallywag Dancing-Molly Watch Ye Billet Barbados Broadside Parley Ye Sea-king Dead-men-tell-no-tales Ransack Pillage Tonnage Rack Aye Matey Lagoon Siren Rum Cutlass Lootin’ Broadside Rip Breech Trove Grub Plunder Quay Chum Watch Foil Shiver-me-timbers Swashbuckler Christopher-Condent Swab Barnacle-Bill Flagship Bottom Barnacle-Bill Hash Rum Sternchaser Luff Claw Hightide Jamboree Scallywag Swindle Bart-Roberts Deck Sea-chest Lootin’ Scud Windjammer Sabre Yaw Sternchaser Dead-men-tell-no-tales Stowaway Watch Long-Ben Quartermaster Richard-Worley Fortune Whydah Jetsam Ledger Whaler Crate Foul-weather Starboard Man-the-cannons Black-Pearl Calypso Yawl Hoist Topmast Yarr Malarkey Mainsail Scavenger Jetsam Stern Spinnaker Reef-parrot Crowbar"
+    "piratetext": "Ledger Shiver-me-timbers Port-Royal Hightide Deadlights Rum-keg Shipwreck Yawl Gallows Rum-pirate Skiff Oar Logbook Skirmish Sea-chest Picaroon"
 }
 ```
 ## /unpiratify
 This is the call for blah blah blah
 ### Request Example:
-```
+```json
 {
-    "piratetext": "Sink Lurker Harbormaster Holdfast Watch Anchor Rum-pirate Bilge Deadeye Buoy Shrouds Salty-sea Land-ho! Avast Hold High-seas Sea-Dog Rip Black-Pearl Lanyard Avast Flag Jamboree Billet Christopher-Condent Shipmate Christopher-Condent Blackbeard Foil Calico-Jack Scud High-seas Corsair Doldrums Dead-men-tell-no-tales Picaroon Barque Barnacle Nest Windward Galleon Rover Rigger Rum Swindle Quay Coast Lurker Yawl Sternchaser Dhow Deadeye Briny Spyglass Black-flag Scuttlebutt First-mate Chum Ghost-ship Briny Reef-parrot Shackle Salty-sea Maroon Sink Rip Blackbeard Blackbeard Shrouds Stave Treasure Windjammer Anne-Bonny Shipmate Sea-Dog Galleon Rumrunner Crowbar Bottom Shipmate Sea-serpent Loop Capstan Topmast Yarrrrrrrrrrrrrrrrrrrrrrr First-mate Mast Another-Ship-Of-William-Kidd Tiller Treachery Black-flag Sloop Rigging Sabre Foul-weather Yarr Black-Pearl Jetsam Sloop Quarter Barnacle Ransom Bilge Land-ho! Skallywag Edward-England Avast Sea-spray Harbormaster Christopher-Condent Sea-serpent Dead-men’s-chest Scavenger Rigging Fortune Booty Edward-England Shipmate Sea-spray Tiller Lurker Quarter Weather Swindle Sea-king Queen-Annes-Revenge Loop Lantern Spinnaker Nautical-chart Marooner Cutlass Fathom Sternchaser Jib Yarrrrrrrrrr Deck Windward Tidal-wave Matey Picaroon Another-Ship-Of-William-Kidd Beacon Chainshot Sternchaser Malarkey Sea-serpent Siren Fluke Smuggler Foil Land-ho! Jibboom Skallywag Dancing-Molly Watch Ye Billet Barbados Broadside Parley Ye Sea-king Dead-men-tell-no-tales Ransack Pillage Tonnage Rack Aye Matey Lagoon Siren Rum Cutlass Lootin’ Broadside Rip Breech Trove Grub Plunder Quay Chum Watch Foil Shiver-me-timbers Swashbuckler Christopher-Condent Swab Barnacle-Bill Flagship Bottom Barnacle-Bill Hash Rum Sternchaser Luff Claw Hightide Jamboree Scallywag Swindle Bart-Roberts Deck Sea-chest Lootin’ Scud Windjammer Sabre Yaw Sternchaser Dead-men-tell-no-tales Stowaway Watch Long-Ben Quartermaster Richard-Worley Fortune Whydah Jetsam Ledger Whaler Crate Foul-weather Starboard Man-the-cannons Black-Pearl Calypso Yawl Hoist Topmast Yarr Malarkey Mainsail Scavenger Jetsam Stern Spinnaker Reef-parrot Crowbar",
+    "piratetext": "Ledger Shiver-me-timbers Port-Royal Hightide Deadlights Rum-keg Shipwreck Yawl Gallows Rum-pirate Skiff Oar Logbook Skirmish Sea-chest Picaroon",
     "key": {
         "keyValue": "MTIzNDU2NzgxMjM0NTY3ODEyMzQ1Njc4MTIzNDU2Nzg=",
         "keyFormat": "base64"
@@ -64,9 +64,9 @@ This is the call for blah blah blah
 }
 ```
 ### Response Example:
-```
+```json
 {
-    "plaintext": "I’m dishonest, and a dishonest man you can always trust to be dishonest. Honestly. It’s the honest ones you want to watch out for, because you can never predict when they’re going to do something incredibly … stupid."
+    "plaintext": "Ahoy World!"
 }
 ```
 <br>
