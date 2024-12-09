@@ -1,5 +1,5 @@
 # pirAtE Standard: Additional Substitution Layer for AES Encryption
-The basic idea for this project was to add a substitution layer after some form of block cipher encryption had been performed such as AES (hence the name). This is not just any substitution layer, but a pirate substitution layer to abstract it more (and because its funny). AES-128, AES-192, and AES-256 with Electronic Code Book (ECB) and Cipher Block Chaining (CBC) (as provided by the PyCryptodome Python module) are the supported encryption alogrithms and there is custom IV support for CBC. At a high level an S-box of sorts is made from shuffling a pirate wordset psuedorandomly using the same key used to encrypt with AES. The AES encrypted bytes are substituted out for pirate terms using this S-box making it "piratey".
+The basic idea for this project was to add a substitution layer after some form of block cipher encryption had been performed such as AES (hence the name). This is not just any substitution layer, but a pirate substitution layer to abstract it more (and because its funny). AES-128, AES-192, and AES-256 with Electronic Code Book (ECB) and Cipher Block Chaining (CBC) (as provided by the PyCryptodome Python module) are the supported encryption alogrithms and there is custom IV support for CBC. At a high level an S-box of sorts is made from shuffling a pirate wordset psuedorandomly using the same key used to encrypt with AES. The AES encrypted bytes are substituted out for pirate terms using this S-box making it "piratey". This project is really not supposed to be practical, but more educational (and to be silly) as plaintext encrypted into piratetext becomes very large very quick since every byte maps to a whole word.
 # Local Setup
 ### Back End
 1. After cloning the repository locally, install the needed dependencies by using this command globally (**NOT RECOMMENDED**) or in a Python virtual environment located in the root folder of the repository (**Recommended**)
@@ -17,13 +17,25 @@ The basic idea for this project was to add a substitution layer after some form 
     ```npm start```
 
 # API Documentation
-| Endpoint  | Purpose |
+| Endpoint  | What it does |
 | ------------- | ------------- |
 | ```POST``` [/piratify](#piratify)  | Returns JSON of provided plaintext in piratetext (encryption) and an IV if used  |
 | ```POST``` [/unpiratify](#unpiratify)  | Returns JSON of provided piratetext in plaintext (decryption)  |
 
 ## /piratify
-This is the call for blah blah blah
+This is the call for encrypting or "piratifying" the given plaintext. All property values **must be string**. Please take note that both key and IV properties are under a parent property of "key" or "iv" respectively. For CBC mode an IV is not required and one will be randomly generated if not provided, but either way the IV will be outputted with the piratetext.
+
+***Bold** = required property
+| Property  | What it is | Value options |
+| ------------- | ------------- | ------------- |
+| **plaintext** | The text that you want to piratify | Any text you want. Do keep in mind how big piratified messages get |
+| **keyValue** | The key used to piratify | Any value in UTF-8 or Base64 that is 16, 24, or 32 bytes long |
+| **keyFormat**  | Format specified for the key | Only "UTF-8" and "Base64" are acceptable values (case-insensitive) |
+| **aesMode**  | The cipher mode used by AES to encrypt | Only "ECB" (Electronic Codebook) and "CBC" (Cipher Block Chaining) are acceptable values (case-insensitive) |
+| ivValue | The IV used in AES encryption (only works in CBC mode) | Any value in UTF-8 or Base64 that is 16 bytes long |
+| ivFormat | Format specified for the IV | Only "UTF-8" and "Base64" are acceptable values (case-insensitive) |
+
+
 ### Request Example:
 ```json
 {
@@ -47,7 +59,7 @@ This is the call for blah blah blah
 }
 ```
 ## /unpiratify
-This is the call for blah blah blah
+This is the call for decrypting or "unpiratifying" the given piratetext. All property values **must be string**.
 ### Request Example:
 ```json
 {
