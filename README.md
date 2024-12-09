@@ -25,16 +25,15 @@ The basic idea for this project was to add a substitution layer after some form 
 ## /piratify
 This is the call for encrypting or "piratifying" the given plaintext. All property values **must be string**. Please take note that both key and IV properties are under a parent property of "key" or "iv" respectively. For CBC mode an IV is not required and one will be randomly generated if not provided, but either way the IV will be outputted with the piratetext.
 
-***Bold** = required property
+****Bold italics*** = required property
 | Property  | What it is | Value options |
 | ------------- | ------------- | ------------- |
-| **plaintext** | The text that you want to piratify | Any text you want. Do keep in mind how big piratified messages get |
-| **keyValue** | The key used to piratify | Any value in UTF-8 or Base64 that is 16, 24, or 32 bytes long |
-| **keyFormat**  | Format specified for the key | Only "UTF-8" and "Base64" are acceptable values (case-insensitive) |
-| **aesMode**  | The cipher mode used by AES to encrypt | Only "ECB" (Electronic Codebook) and "CBC" (Cipher Block Chaining) are acceptable values (case-insensitive) |
+| ***plaintext*** | The text that you want to piratify | Any text you want. Do keep in mind how big piratified messages get |
+| ***keyValue*** | The key used to piratify | Any value in UTF-8 or Base64 that is 16, 24, or 32 bytes long |
+| ***keyFormat***  | Format specified for the key | Only "UTF-8" and "Base64" are acceptable values (case-insensitive) |
+| ***aesMode***  | The cipher mode used by AES to encrypt | Only "ECB" (Electronic Codebook) and "CBC" (Cipher Block Chaining) are acceptable values (case-insensitive) |
 | ivValue | The IV used in AES encryption (only works in CBC mode) | Any value in UTF-8 or Base64 that is 16 bytes long |
 | ivFormat | Format specified for the IV | Only "UTF-8" and "Base64" are acceptable values (case-insensitive) |
-
 
 ### Request Example:
 ```json
@@ -59,7 +58,18 @@ This is the call for encrypting or "piratifying" the given plaintext. All proper
 }
 ```
 ## /unpiratify
-This is the call for decrypting or "unpiratifying" the given piratetext. All property values **must be string**.
+This is the call for decrypting or "unpiratifying" the given piratetext. All property values **must be string**. Please take note that both key and IV properties are under a parent property of "key" or "iv" respectively. **An IV is required for CBC mode decryption**
+
+****Bold italics*** = required property
+| Property  | What it is | Value options |
+| ------------- | ------------- | ------------- |
+| ***piratetext*** | The text that you want to unpiratify | Any text that has been piratified |
+| ***keyValue*** | The key used to unpiratify | The same key used to piratify the plaintext |
+| ***keyFormat***  | Format specified for the key | Only "UTF-8" and "Base64" are acceptable values (case-insensitive) |
+| ***aesMode***  | The cipher mode used by AES to encrypt | Only "ECB" (Electronic Codebook) and "CBC" (Cipher Block Chaining) are acceptable values (case-insensitive) |
+| ivValue | The IV used in AES encryption (**required in CBC mode**) | The same IV used to encrypt the plaintext |
+| ivFormat | Format specified for the IV (**required in CBC mode**) | Only "UTF-8" and "Base64" are acceptable values (case-insensitive) |
+
 ### Request Example:
 ```json
 {
